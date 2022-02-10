@@ -1,1 +1,10 @@
-You might need to do a "go mod init bhg-scanner" or "go mod tidy"
+Lab 2 - Port Scanner
+bhg-scanner/main
+purpose: Main runs the scanner package which takes in two values from the terminal. One,
+    a port to start scanning at, and two, a port to stop scanning at. The PortScanner() method returns the number
+    of ports it scanned and prints all of the open and closed ports to the screen.
+todo modifications: In the TODOS, I added a DialTimeout function to stop waiting for a response on a port after 2
+    seconds. Also, I added functionality to handle and appropriately process a list of the closed ports. Finally, 
+    I modified the function to return two ints, the length of the closed and open ports arrays.
+my modification: I modified scanner.go to use input values from main as a range of ports to scan. If the user does
+    not supply values, or supplies negative values, the default range is 1-1024.
