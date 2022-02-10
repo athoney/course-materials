@@ -31,7 +31,12 @@ func worker(ports, results chan int) {
 // hard: restructuring code - consider modification to class/object 
 // No matter what you do, modify scanner_test.go to align; note the single test currently fails
 func PortScanner(start, end int) (int, int) {  
-
+	if (start < 0){
+		start = 1;
+	}
+	if (end < 0){
+		end = 1024;
+	}
 	var closedports []int
 	var openports []int
 
