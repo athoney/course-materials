@@ -37,6 +37,10 @@ func PortScanner(start, end int) (int, int) {
 	if (end < 0){
 		end = 1024;
 	}
+	if (start > end){
+		start = 1;
+		end = 1024;
+	}
 	var closedports []int
 	var openports []int
 
