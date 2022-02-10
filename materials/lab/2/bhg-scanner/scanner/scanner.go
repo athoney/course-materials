@@ -12,10 +12,6 @@ import (
 	"time"
 )
 
-var closedports []int
-var openports []int
-
-
 func worker(ports, results chan int) {
 	for p := range ports {
 		address := fmt.Sprintf("scanme.nmap.org:%d", p)    
@@ -34,16 +30,10 @@ func worker(ports, results chan int) {
 // med: easy + return  complex data structure(s?) (maps or slices) containing the ports.
 // hard: restructuring code - consider modification to class/object 
 // No matter what you do, modify scanner_test.go to align; note the single test currently fails
-func PortScanner() (int, int) {  
+func PortScanner(start, end int) (int, int) {  
 
-	var start int
-	var end int
-
-	fmt.Println("Enter the port to begin scanning at: ")
-	fmt.Scanln(&start)
-	fmt.Println("Enter the port to stop scanning at: ")
-	fmt.Scanln(&end)
-
+	var closedports []int
+	var openports []int
 
 	ports := make(chan int, 450)
 	results := make(chan int)
@@ -72,9 +62,9 @@ func PortScanner() (int, int) {
 	sort.Ints(openports)
 	sort.Ints(closedports)
 
-	// for _, port := range openports {
-	// 	fmt.Printf("%d, OPEN\n", port)
-	// }
+	for _, port := range openports {
+		fmt.Printf("%d, open\n", port)
+	}
 
 	for _, port := range closedports {
 		fmt.Printf("%d, closed\n", port)

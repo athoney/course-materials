@@ -7,7 +7,7 @@ import (
 // THESE TESTS ARE LIKELY TO FAIL IF YOU DO NOT CHANGE HOW the worker connects (e.g., you should use DialTimeout)
 func TestOpenPort(t *testing.T){
 
-    got, _ := PortScanner() // Currently function returns only number of open ports
+    got, _ := PortScanner(1, 1024) // Currently function returns only number of open ports
     want := 2 // default value when passing in 1024 TO scanme; also only works because currently PortScanner only returns 
 	          //consider what would happen if you parameterize the portscanner address and ports to scan
 
@@ -19,7 +19,7 @@ func TestOpenPort(t *testing.T){
 func TestTotalPortsScanned(t *testing.T){
 	// THIS TEST WILL FAIL - YOU MUST MODIFY THE OUTPUT OF PortScanner()
 
-    open, closed := PortScanner() // Currently function returns only number of open ports
+    open, closed := PortScanner(1, 1024) // Currently function returns only number of open ports
 	got := open + closed
     want := 1024 // default value; consider what would happen if you parameterize the portscanner ports to scan
 
@@ -27,6 +27,3 @@ func TestTotalPortsScanned(t *testing.T){
         t.Errorf("got %d, wanted %d", got, want)
     }
 }
-
-
-// tiem ./main > output.csv

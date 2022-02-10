@@ -1,7 +1,18 @@
 package main
 
-import "bhg-scanner/scanner"
+import (
+	"fmt"
+	"bhg-scanner/scanner"
+)
 
 func main(){
-	scanner.PortScanner()
+	var start int
+	var end int
+
+	fmt.Printf("Enter the port to begin scanning at: ")
+	fmt.Scanln(&start)
+	fmt.Printf("Enter the port to stop scanning at: ")
+	fmt.Scanln(&end)
+
+	scanner.PortScanner(start, end)
 }
