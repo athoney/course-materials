@@ -17,7 +17,7 @@ import (
 
 func main() {
 	fmt.Printf("port, status\n")  // adding output - csv format
-	for i := 1; i <= 1024; i++ {
+	for i := 22; i <= 81; i+=2 {
 		address := fmt.Sprintf("scanme.nmap.org:%d", i)
 		conn, err := net.DialTimeout("tcp", address, 1 * time.Second ) // DRMIKE: using DialTimeout over Dial (one extra parameter!); consider < 1 Second
 		if err != nil {
