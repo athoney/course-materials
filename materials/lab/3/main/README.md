@@ -1,4 +1,4 @@
-# Lab 4 - Shodan API
+# Lab 3b - Shodan API
 ## To run this file: 
 1. navigate to /course-materials/materials/lab/3/main
 2. type: `go build main.go`
