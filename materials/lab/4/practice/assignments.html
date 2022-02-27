@@ -1,0 +1,35 @@
+{{ define "assign" }}
+{{ template "header" .}}
+
+<main class="mx-auto" style="width: 75%; margin-top: 30px;">
+    <table class="table bg-light">
+        <thead>
+          <tr>
+            <th scope="col">Class Id</th>
+            <th scope="col">Class Name</th>
+            <th scope="col">Assignment</th>
+            <th scope="col">Description</th>
+            <th scope="col">Points</th>
+            <th scope="col">Due Date</th>
+            <th scope="col">Time Estimate</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{range .Assignments}}
+          <tr>
+            <th scope="row">{{ .Title }}</th>
+            <td>{{ .Id }}</td>
+            <td>{{ .Class }}</td>
+            <td>{{ .Title }}</td>
+            <td>{{ .Description }}</td>
+            <td>{{ .Points }}</td>
+            <td>{{ .DueDate }}</td>
+            <td>{{ .TimeEstimate }}</td>
+          </tr>
+          {{end}}
+        </tbody>
+    </table>
+</main>
+
+{{ template "footer" .}}
+{{ end }}

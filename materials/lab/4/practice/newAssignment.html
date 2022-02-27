@@ -1,0 +1,89 @@
+{{ define "newAssign"}}
+{{template "header" .}}
+<main class="m-auto" style="width: 75%">
+    <div class="py-5 text-center">
+      <h2>Add New Assignment</h2>
+      <p class="lead">Add your new assignment with the form below.</p>
+    </div>
+
+    <div class="row g-5">
+      <div class="col">
+        <form method="POST" class="needs-validation" novalidate>
+
+          <!--first two inputs-->
+        <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="classId" class="form-label">Class Id</label>
+              <input type="text" class="form-control" id="id" placeholder="" value="" required>
+              <div class="invalid-feedback">
+                Class Id
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <label for="className" class="form-label">Class name</label>
+              <input type="text" class="form-control" id="class" placeholder="" value="" required>
+              <div class="invalid-feedback">
+                Class name
+              </div>
+            </div>
+
+            <!--rest of form nput-->
+            <div class="col-12">
+              <label for="username" class="form-label">Assignment Name</label>
+              <div class="input-group has-validation">
+                <!--<span class="input-group-text">@</span>-->
+                <input type="text" class="form-control" id="title" placeholder="" required>
+              <div class="invalid-feedback">
+                  Your assignment name is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label for="desc" class="form-label">Description <span class="text-muted">(Optional)</span></label>
+              <input type="text" class="form-control" id="desc">
+              <!--invalid feedback-->
+            </div>
+
+            <div class="col-sm-6">
+              <label for="points" class="form-label">Points</label>
+              <input type="text" class="form-control" id="points"required>
+              <div class="invalid-feedback">
+                Please enter the points for this assignment.
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <label for="dueDate" class="form-label">Due Date<span class="text-muted"></span></label>
+              <input type="text" class="form-control" id="duedate"required>
+              <div class="invalid-feedback">
+                Please enter the due date for this assignment.
+              </div>
+            </div>
+
+            <div class="col-md-5">
+              <label for="timeEstimate" class="form-label">Time Estimate</label>
+              <select class="form-select" id="timeestimate" required>
+                <option value="">Choose...</option>
+                <option>Minute(s)</option>
+                <option>Hour(s)</option>
+                <option>Day(s)</option>
+                <option>Weeks(s)</option>
+              </select>
+              <div class="invalid-feedback">
+                Please select a time estimate.
+              </div>
+            </div>
+
+          </div>
+
+          <hr class="my-4">
+
+          <button class="w-100 btn btn-dark btn-lg" type="submit">Add Assignment</button>
+        </form>
+      </div>
+    </div>
+  </main>
+{{template "footer" .}}
+{{ end }}

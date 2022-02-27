@@ -5,11 +5,12 @@ import (
 	"net/http"
 	"github.com/gorilla/mux"
 	"wyoassign/wyoassign"
+
 )
 
 
 func main() {
-	wyoassign.InitAssignments()
+	wyoassign.InitAssignments() //creates baseline data
 	log.Println("starting API server")
 	//create a new router
 	router := mux.NewRouter()
@@ -19,7 +20,10 @@ func main() {
 	router.HandleFunc("/assignments", wyoassign.GetAssignments).Methods("GET")
 	router.HandleFunc("/assignment/{id}", wyoassign.GetAssignment).Methods("GET")
 	router.HandleFunc("/assignment/{id}", wyoassign.DeleteAssignment).Queries("validationkey", "{key}").Methods("DELETE")		
-	router.HandleFunc("/assignment", wyoassign.CreateAssignment).Methods("POST")	
+	router.HandleFunc("/newAssignment", wyoassign.NewAssignment).Methods("GET")
+	router.HandleFunc("/newAssignment", wyoassign.CreateAssignment).Methods("POST")
+	router.HandleFunc("/", wyoassign.Home)
+
 	// router.HandleFunc("/assignments/{id}", wyoassign.UpdateAssignment).Methods("PUT")
 
 	http.Handle("/", router)

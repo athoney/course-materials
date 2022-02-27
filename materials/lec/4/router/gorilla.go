@@ -30,7 +30,7 @@ func main() {
 		fmt.Fprintf(w ,"I see you %s\n",name)
 	})
 	// more at https://github.com/gorilla/mux > readme 
-	r.HandleFunc("/varclass/{class:[a-Z]+}/{studentname:[a-z]+[0-9]*}", func(w http.ResponseWriter, req *http.Request){
+	r.HandleFunc("/varclass/{class:[a-z]+}/{studentname:[a-z]+[0-9]*}", func(w http.ResponseWriter, req *http.Request){
 		classtitle := mux.Vars(req)["class"]
 		name := mux.Vars(req)["studentname"]
 		fmt.Fprintf(w ,"%s I see you in %s\n",name,classtitle)

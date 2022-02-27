@@ -1,0 +1,14 @@
+{{ define "home" }}
+{{template "header" .}}
+
+<main class="px-3 m-auto text-center" style="width: 50%;">
+
+    <h1>Welcome {{.Name}},</h1>
+    <p class="lead">my name is Ada, your personal assignment manager. I will help you add, delete, and view your current assignments. Let's get started.</p>
+    <a class="btn btn-light" href="/assignments" role="button">View Assignments</a>
+
+    
+</main>
+
+{{template "footer" .}}
+{{ end }}

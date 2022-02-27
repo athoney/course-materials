@@ -18,9 +18,9 @@ import (
 type router struct {
 }
 
-func (r *router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+func (r *router) ServeHTTP(w http.ResponseWriter, req *http.Request) { //(response, request)
 	
-	rand.Seed(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano()) //set a random seed to get random numbers (scientific computing uses a constant seed for repetable results)
 	const maxint = int(^uint(0)>>1) // https://stackoverflow.com/a/6878625
 
 	switch req.URL.Path {
@@ -43,7 +43,7 @@ func (r *router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprint(w, string(bytes))
 
 	default:
-		http.Error(w, "404 Not Found", 404)
+		http.Error(w, "418 I'm a teapot", 418)
 	}
 }
 
