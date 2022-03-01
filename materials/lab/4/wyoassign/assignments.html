@@ -15,10 +15,12 @@
             <th scope="col">Modify</th>
           </tr>
         </thead>
-        <tbody>
-        {{range .Assignments}}
-          <tr>
-            <th scope="row">{{ .Id }}</th>
+        <tbody class="mx-auto">
+        {{range .Assigns}}
+          <tr style="vertical-align: middle;">
+            <th scope="row">
+                <a href="/assignment/{{ .Id }}" class="btn">{{ .Id }}</a>
+            </th>
             <td>{{ .Class }}</td>
             <td>{{ .Title }}</td>
             <td>{{ .Description }}</td>
@@ -26,13 +28,14 @@
             <td>{{ .DueDate }}</td>
             <td>{{ .TimeEstimate }}</td>
             <td>
-                <form method="POST" action="/assignment/modify/{{.PK}}">
+                <form method="POST" action="/assignment/modify">
+                <input type="hidden" name="PK" value="{{.PK}}">
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="update" id="inlineRadio1" value="update">
+                    <input class="form-check-input" type="radio" name="modify" id="inlineRadio1" value="update">
                     <label class="form-check-label" for="inlineRadio1">Update</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="delete" id="inlineRadio2" value="delete">
+                    <input class="form-check-input" type="radio" name="modify" id="inlineRadio2" value="delete">
                     <label class="form-check-label" for="inlineRadio2">Delete</label>
                 </div>
                 <input class="btn btn-dark" type="submit">

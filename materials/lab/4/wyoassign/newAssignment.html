@@ -9,6 +9,7 @@
         <a class="btn btn-light m-auto" href="/assignments" role="button">View Assignments</a>
 </main>
 {{ else }}
+
 <main class="m-auto" style="width: 75%">
     <div class="py-5 text-center">
       <h2>New Assignment</h2>
@@ -23,12 +24,12 @@
         <div class="row g-3">
             <div class="col-sm-6">
               <label for="id" class="form-label">Class Id</label>
-              <input type="text" class="form-control" id="id" placeholder="" name="id" value="4010">
+              <input type="text" class="form-control" id="id" placeholder="" name="id" value="{{ .Id }}" required>
             </div>
 
             <div class="col-sm-6">
               <label for="className" class="form-label">Class name</label>
-              <input type="text" class="form-control" id="class" placeholder="" name="class" value="BlackHatGo" required>
+              <input type="text" class="form-control" id="class" placeholder="" name="class" value="{{ .Class }}" required>
               <div class="invalid-feedback">
                 Class name
               </div>
@@ -39,7 +40,7 @@
               <label for="username" class="form-label">Assignment Name</label>
               <div class="input-group has-validation">
                 <!--<span class="input-group-text">@</span>-->
-                <input type="text" class="form-control" id="title" placeholder="" name="title" value="Program!"required>
+                <input type="text" class="form-control" id="title" placeholder="" name="title" value="{{ .Class }}" required>
               <div class="invalid-feedback">
                   Your assignment name is required.
                 </div>
@@ -48,7 +49,7 @@
 
             <div class="col-12">
               <label for="desc" class="form-label">Description <span class="text-muted">(Optional)</span></label>
-              <textarea class="form-control" id="desc" rows="3" name="desc"></textarea>
+              <textarea class="form-control" id="desc" rows="3" name="desc" value ="{{ .Desc }}"></textarea>
               <!--invalid feedback-->
             </div>
 

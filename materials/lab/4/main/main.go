@@ -18,11 +18,11 @@ func main() {
 	//specify endpoints
 	router.HandleFunc("/api-status", wyoassign.APISTATUS).Methods("GET")
 	router.HandleFunc("/assignments", wyoassign.GetAssignments).Methods("GET")
-	router.HandleFunc("/assignment/{id}", wyoassign.GetAssignment).Methods("GET")
+	router.HandleFunc("/assignment/{id}", wyoassign.GetAssignmentId).Methods("GET")
 	//router.HandleFunc("/assignment/{id}", wyoassign.DeleteAssignment).Queries("validationkey", "{key}").Methods("DELETE")		
 	router.HandleFunc("/newAssignment", wyoassign.NewAssignment).Methods("GET")
 	router.HandleFunc("/newAssignment", wyoassign.CreateAssignment).Methods("POST")
-	router.HandleFunc("/assignment/modify/{pk}", wyoassign.ModifyAssignment).Methods("POST")
+	router.HandleFunc("/assignment/modify", wyoassign.ModifyAssignment).Methods("POST")
 
 	
 	router.HandleFunc("/", wyoassign.Home)

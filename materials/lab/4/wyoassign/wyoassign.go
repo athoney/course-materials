@@ -11,7 +11,11 @@ import (
 )
 
 type Response struct{
-	Assignments []Assignment `json:"assignments"`
+	Assigns []Assignment `json:"assignments"`
+}
+
+type ResponseAssign struct{
+	Assign Assignment `json:"assignment"`
 }
 
 type Assignment struct {
@@ -36,7 +40,7 @@ var templates = template.Must(template.ParseFiles("/home/cabox/workspace/course-
 
 func InitAssignments(){
 	var assignmnet Assignment
-	assignmnet.PK = 1
+	assignmnet.PK = 0
 	assignmnet.Id = "3010"
 	assignmnet.Class = "Software Design"
 	assignmnet.Title = "Program02"
@@ -58,7 +62,7 @@ func GetAssignments(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
 	var response Response
 
-	response.Assignments = Assignments
+	response.Assigns = Assignments
 
 	//w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -69,20 +73,21 @@ func GetAssignments(w http.ResponseWriter, r *http.Request) {
 	templates.ExecuteTemplate(w, "assign", response)
 }
 
-func GetAssignment(w http.ResponseWriter, r *http.Request) {
+func GetAssignmentId(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
-	w.Header().Set("Content-Type", "application/json")
+	//w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	params := mux.Vars(r)
+	var AssignmentIds []Assignment
+	var response Response
 
-	for _, assignment := range Assignments {
+	for i, assignment := range Assignments {
 		if assignment.Id == params["id"]{
-			json.NewEncoder(w).Encode(assignment)
-			break
+			AssignmentIds = append(AssignmentIds, Assignments[i])
 		}
 	}
-	//TODO : Provide a response if there is no such assignment
-	//w.Write(jsonResponse)
+	response.Assigns = AssignmentIds
+	templates.ExecuteTemplate(w, "assign", response)
 }
 
 func DeleteAssignment(w http.ResponseWriter, r *http.Request) {
@@ -115,26 +120,27 @@ func DeleteAssignment(w http.ResponseWriter, r *http.Request) {
 
 func ModifyAssignment(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
-	w.Header().Set("Content-Type", "application/json")
+	// w.Header().Set("Content-Type", "application/json")
 	if err := r.ParseForm(); err != nil {
 		log.Print(w, "ParseForm() err: %v", err)
 		return
 	}
+	var response ResponseAssign
 
-	if (r.FormValue("update") == "update"){
-		log.Print(r.FormValue("update"))
+	if (r.FormValue("modify") == "update"){
+		log.Print(r.FormValue("modify"))
 		//New template
-		templates.ExecuteTemplate(w, "editAssign", r)
- 	} else {
-		log.Print(r.FormValue("delete"))
-	}
-	log.Print(r.Form["delete"])
-	log.Print(r.Form["update"])
-	log.Print(r.FormValue("delete"))
-	log.Print(r.FormValue("update"))
+		//Loop through 
+		PK, _ := strconv.Atoi(r.FormValue("PK"))
+		response.Assign = Assignments[PK]
+		templates.ExecuteTemplate(w, "newAssign", response)
+		log.Print(Assignments[PK])
 
-	
-	//TODO This should like like cross betweeen Create / Get   
+	 } else {
+		log.Print(r.FormValue("modify"))
+	 	DeleteAssignment(w, r)
+	 	templates.ExecuteTemplate(w, "newAssign", r)
+	} 
 
 }
 
