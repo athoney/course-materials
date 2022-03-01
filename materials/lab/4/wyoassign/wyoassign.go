@@ -15,21 +15,28 @@ type Response struct{
 }
 
 type Assignment struct {
+	PK int `json:"pk"`
 	Id string `json:"id"`
-	Class string `json:"class`
-	Title string `json:"title`
+	Class string `json:"class"`
+	Title string `json:"title"`
 	Description string `json:"desc"`
 	Points int `json:"points"`
-	DueDate string `json:"duedate`
-	TimeEstimate string  `json:"timeestimate`
+	DueDate string `json:"duedate"`
+	TimeEstimate string  `json:"timeestimate"`
 }
 
 var Assignments []Assignment
 const Valkey string = "FooKey"
+var templates = template.Must(template.ParseFiles("/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/home.html", 
+	"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/newAssignment.html", 
+	"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/assignments.html", 
+	"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/header.html", 
+	"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/footer.html"))
 
 
 func InitAssignments(){
 	var assignmnet Assignment
+	assignmnet.PK = 1
 	assignmnet.Id = "3010"
 	assignmnet.Class = "Software Design"
 	assignmnet.Title = "Program02"
@@ -50,26 +57,15 @@ func APISTATUS(w http.ResponseWriter, r *http.Request) {
 func GetAssignments(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
 	var response Response
-	
-	templates := template.Must(template.ParseFiles("/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/home.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/newAssignment.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/assignments.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/header.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/footer.html"))
 
 	response.Assignments = Assignments
 
 	//w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	
-	//jsonResponse, err := json.Marshal(response)
-
-	// if err != nil {
-	// 	return
-	// }
-
-	//TODO 
-	//w.Write(jsonResponse)
+	for _, val := range Assignments {
+		log.Print(val.PK)
+	} 
 	templates.ExecuteTemplate(w, "assign", response)
 }
 
@@ -117,9 +113,26 @@ func DeleteAssignment(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonResponse)
 }
 
-func UpdateAssignment(w http.ResponseWriter, r *http.Request) {
+func ModifyAssignment(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
 	w.Header().Set("Content-Type", "application/json")
+	if err := r.ParseForm(); err != nil {
+		log.Print(w, "ParseForm() err: %v", err)
+		return
+	}
+
+	if (r.FormValue("update") == "update"){
+		log.Print(r.FormValue("update"))
+		//New template
+		templates.ExecuteTemplate(w, "editAssign", r)
+ 	} else {
+		log.Print(r.FormValue("delete"))
+	}
+	log.Print(r.Form["delete"])
+	log.Print(r.Form["update"])
+	log.Print(r.FormValue("delete"))
+	log.Print(r.FormValue("update"))
+
 	
 	//TODO This should like like cross betweeen Create / Get   
 
@@ -131,12 +144,6 @@ func CreateAssignment(w http.ResponseWriter, r *http.Request) {
 		log.Print(w, "ParseForm() err: %v", err)
 		return
 	}
-	templates := template.Must(template.ParseFiles("/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/home.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/newAssignment.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/assignments.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/header.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/footer.html"))
-	templates.ExecuteTemplate(w, "home", nil)
 	var assignmnet Assignment
 	
 	// Possible TODO: Better Error Checking!
@@ -144,9 +151,9 @@ func CreateAssignment(w http.ResponseWriter, r *http.Request) {
 	log.Printf("In create assignment")
 	log.Print(r.FormValue("class"))
 
-
 	if(r.FormValue("id") != ""){
-		assignmnet.Id =  "7"
+		assignmnet.PK = Assignments[len(Assignments)-1].PK + 1
+		assignmnet.Id =  r.FormValue("id")
 		assignmnet.Title =  r.FormValue("title")
 		assignmnet.Class =  r.FormValue("class")
 		assignmnet.Description =  r.FormValue("desc")
@@ -154,19 +161,17 @@ func CreateAssignment(w http.ResponseWriter, r *http.Request) {
 		assignmnet.DueDate =  r.FormValue("duedate")
 		assignmnet.TimeEstimate =  r.FormValue("timeestimate")
 		Assignments = append(Assignments, assignmnet)
-		//w.WriteHeader(http.StatusCreated)
+		w.WriteHeader(http.StatusCreated)
+		templates.ExecuteTemplate(w, "newAssign", struct{ Success bool}{true})
+		return
 	}
-	//w.WriteHeader(http.StatusNotFound)
+	w.WriteHeader(http.StatusNotFound)
 
 }
 
 func NewAssignment(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
-	templates := template.Must(template.ParseFiles("/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/home.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/newAssignment.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/assignments.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/header.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/footer.html"))
+
 	templates.ExecuteTemplate(w, "newAssign", nil)
 	
 	//TODO This should like like cross betweeen Create / Get   
@@ -175,12 +180,8 @@ func NewAssignment(w http.ResponseWriter, r *http.Request) {
 
 func Home(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
-	templates := template.Must(template.ParseFiles("/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/home.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/newAssignment.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/assignments.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/header.html", 
-		"/home/cabox/workspace/course-materials/materials/lab/4/wyoassign/footer.html"))
-	templates.ExecuteTemplate(w, "home", nil)
+
+	templates.ExecuteTemplate(w, "home", struct{ Name string}{"Alicia"})
 	
 	//TODO This should like like cross betweeen Create / Get   
 

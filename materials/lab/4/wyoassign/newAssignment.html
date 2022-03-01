@@ -1,5 +1,14 @@
 {{ define "newAssign"}}
 {{template "header" .}}
+
+{{if .Success}}
+<main class="mx-auto text-center" style="width: 75%">
+        <div class="alert alert-success mt-1" role="alert">
+            Your new assignment was added!
+        </div>
+        <a class="btn btn-light m-auto" href="/assignments" role="button">View Assignments</a>
+</main>
+{{ else }}
 <main class="m-auto" style="width: 75%">
     <div class="py-5 text-center">
       <h2>New Assignment</h2>
@@ -8,7 +17,7 @@
 
     <div class="row g-5">
       <div class="col">
-        <form method="POST" class="needs-validation" novalidate>
+        <form method="POST" class="needs-validation">
 
           <!--first two inputs-->
         <div class="row g-3">
@@ -39,7 +48,7 @@
 
             <div class="col-12">
               <label for="desc" class="form-label">Description <span class="text-muted">(Optional)</span></label>
-              <input type="text" class="form-control" id="desc" name="desc" value="This is a desc">
+              <textarea class="form-control" id="desc" rows="3" name="desc"></textarea>
               <!--invalid feedback-->
             </div>
 
@@ -82,5 +91,6 @@
       </div>
     </div>
   </main>
+  {{ end }}
 {{template "footer" .}}
 {{ end }}
