@@ -1,35 +1,42 @@
 {{ define "newAssign"}}
 {{template "header" .}}
 
-{{if .Success}}
+{{if .Added}}
 <main class="mx-auto text-center" style="width: 75%">
         <div class="alert alert-success mt-1" role="alert">
-            Your new assignment was added!
+            {{ if .Update}}
+                Your assignment has been updated!
+            {{ else }}
+                Your assignment has been added!
+            {{ end }}
         </div>
         <a class="btn btn-light m-auto" href="/assignments" role="button">View Assignments</a>
 </main>
 {{ else }}
-
 <main class="m-auto" style="width: 75%">
     <div class="py-5 text-center">
-      <h2>New Assignment</h2>
-      <p class="lead">Add your new assignment with the form below.</p>
+        <h2>New Assignment</h2>
+        <p class="lead">Add your new assignment with the form below.</p>
     </div>
 
     <div class="row g-5">
       <div class="col">
-        <form method="POST" class="needs-validation">
-
+        {{ if .Update }}
+            <form method="POST" action="/assignment/modify/update" class="needs-validation" >
+        {{ else }}
+            <form method="POST" class="needs-validation" >
+        {{ end }}
+            <input type="hidden" name="PK" value="{{ .FormData.PK }}">
           <!--first two inputs-->
         <div class="row g-3">
             <div class="col-sm-6">
               <label for="id" class="form-label">Class Id</label>
-              <input type="text" class="form-control" id="id" placeholder="" name="id" value="{{ .Id }}" required>
+              <input type="text" class="form-control" id="id" placeholder="" name="id" value="{{ .FormData.Id }}" required>
             </div>
 
             <div class="col-sm-6">
               <label for="className" class="form-label">Class name</label>
-              <input type="text" class="form-control" id="class" placeholder="" name="class" value="{{ .Class }}" required>
+              <input type="text" class="form-control" id="class" placeholder="" name="class" value="{{ .FormData.Class }}" required>
               <div class="invalid-feedback">
                 Class name
               </div>
@@ -40,7 +47,7 @@
               <label for="username" class="form-label">Assignment Name</label>
               <div class="input-group has-validation">
                 <!--<span class="input-group-text">@</span>-->
-                <input type="text" class="form-control" id="title" placeholder="" name="title" value="{{ .Class }}" required>
+                <input type="text" class="form-control" id="title" placeholder="" name="title" value="{{ .FormData.Title }}" required>
               <div class="invalid-feedback">
                   Your assignment name is required.
                 </div>
@@ -49,13 +56,13 @@
 
             <div class="col-12">
               <label for="desc" class="form-label">Description <span class="text-muted">(Optional)</span></label>
-              <textarea class="form-control" id="desc" rows="3" name="desc" value ="{{ .Desc }}"></textarea>
+              <textarea class="form-control" id="desc" rows="3" name="desc">{{ .FormData.Description }}</textarea>
               <!--invalid feedback-->
             </div>
 
             <div class="col-sm-6">
               <label for="points" class="form-label">Points</label>
-              <input type="text" class="form-control" id="points" name="points" value="1" required>
+              <input type="text" class="form-control" id="points" name="points" value="{{ .FormData.Points }}" required>
               <div class="invalid-feedback">
                 Please enter the points for this assignment.
               </div>
@@ -63,7 +70,7 @@
 
             <div class="col-sm-6">
               <label for="dueDate" class="form-label">Due Date<span class="text-muted"></span></label>
-              <input type="text" class="form-control" id="duedate" name="duedate" value="March 9, 2022" required>
+              <input type="text" class="form-control" id="duedate" name="duedate" value="{{ .FormData.DueDate }}" required>
               <div class="invalid-feedback">
                 Please enter the due date for this assignment.
               </div>
@@ -71,16 +78,17 @@
 
             <div class="col-md-5">
               <label for="timeEstimate" class="form-label">Time Estimate</label>
-              <select class="form-select" id="timeestimate" name="timeestimate" required>
-                <option value="">Choose...</option>
+              <select class="form-select" id="timeestimate" name="timeestimate">
+                {{ if .Update}}
+                    <option value="{{ .FormData.TimeEstimate }}">{{ .FormData.TimeEstimate }}</option>
+                {{ else }}
+                    <option value="">Choose...</option>
+                {{ end }}
                 <option>Minute(s)</option>
                 <option>Hour(s)</option>
                 <option>Day(s)</option>
                 <option>Weeks(s)</option>
               </select>
-              <div class="invalid-feedback">
-                Please select a time estimate.
-              </div>
             </div>
 
           </div>

@@ -12,6 +12,7 @@ import (
 
 type Response struct{
 	Assigns []Assignment `json:"assignments"`
+	Empty bool `json:"empty"`
 }
 
 type ResponseAssign struct{
@@ -27,6 +28,12 @@ type Assignment struct {
 	Points int `json:"points"`
 	DueDate string `json:"duedate"`
 	TimeEstimate string  `json:"timeestimate"`
+}
+
+type PageData struct {
+	Added bool `json:"added"`
+	Update bool `json:"update"`
+	FormData Assignment
 }
 
 var Assignments []Assignment
@@ -63,13 +70,18 @@ func GetAssignments(w http.ResponseWriter, r *http.Request) {
 	var response Response
 
 	response.Assigns = Assignments
-
+	if (len(Assignments) == 0) {
+		response.Empty = true
+	} else {
+		response.Empty = false
+	}
 	//w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	
 	for _, val := range Assignments {
 		log.Print(val.PK)
-	} 
+	}
+	log.Print(response) 
 	templates.ExecuteTemplate(w, "assign", response)
 }
 
@@ -87,12 +99,14 @@ func GetAssignmentId(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	response.Assigns = AssignmentIds
+	response.Empty = false
 	templates.ExecuteTemplate(w, "assign", response)
 }
 
-func DeleteAssignment(w http.ResponseWriter, r *http.Request) {
+
+func DeleteAssignmentAPI(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s DELETE end point", r.URL.Path)
-	w.Header().Set("Content-Type", "application/txt")
+	//w.Header().Set("Content-Type", "application/txt")
 	w.WriteHeader(http.StatusOK)
 	params := mux.Vars(r)
 	
@@ -125,21 +139,20 @@ func ModifyAssignment(w http.ResponseWriter, r *http.Request) {
 		log.Print(w, "ParseForm() err: %v", err)
 		return
 	}
-	var response ResponseAssign
+	var response PageData
 
 	if (r.FormValue("modify") == "update"){
 		log.Print(r.FormValue("modify"))
 		//New template
 		//Loop through 
 		PK, _ := strconv.Atoi(r.FormValue("PK"))
-		response.Assign = Assignments[PK]
+		response.Added = false
+		response.Update = true
+		response.FormData = Assignments[PK]
 		templates.ExecuteTemplate(w, "newAssign", response)
-		log.Print(Assignments[PK])
-
 	 } else {
 		log.Print(r.FormValue("modify"))
 	 	DeleteAssignment(w, r)
-	 	templates.ExecuteTemplate(w, "newAssign", r)
 	} 
 
 }
@@ -168,11 +181,59 @@ func CreateAssignment(w http.ResponseWriter, r *http.Request) {
 		assignmnet.TimeEstimate =  r.FormValue("timeestimate")
 		Assignments = append(Assignments, assignmnet)
 		w.WriteHeader(http.StatusCreated)
-		templates.ExecuteTemplate(w, "newAssign", struct{ Success bool}{true})
+		templates.ExecuteTemplate(w, "newAssign", struct{ Added, Update bool}{true, false})
 		return
 	}
 	w.WriteHeader(http.StatusNotFound)
 
+}
+
+func UpdateAssignment(w http.ResponseWriter, r *http.Request) {
+	//w.Header().Set("Content-Type", "application/json")
+	if err := r.ParseForm(); err != nil {
+		log.Print(w, "ParseForm() err: %v", err)
+		return
+	}
+
+	PK, _ := strconv.Atoi(r.FormValue("PK"))
+
+	Assignments[PK].Id =  r.FormValue("id")
+	Assignments[PK].Title =  r.FormValue("title")
+	Assignments[PK].Class =  r.FormValue("class")
+	Assignments[PK].Description =  r.FormValue("desc")
+	Assignments[PK].Points, _ =  strconv.Atoi(r.FormValue("points"))
+	Assignments[PK].DueDate =  r.FormValue("duedate")
+	Assignments[PK].TimeEstimate =  r.FormValue("timeestimate")
+	templates.ExecuteTemplate(w, "newAssign", struct{ Added, Update bool}{true, true})
+
+}
+
+func DeleteAssignment(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		log.Print(w, "ParseForm() err: %v", err)
+		return
+	}
+
+	for i, assignment := range Assignments {
+		assignment.PK = i
+	}
+
+	PK, _ := strconv.Atoi(r.FormValue("PK"))
+
+	if (len(Assignments) == 1) {
+		Assignments = nil
+	} else {
+		Assignments = append(Assignments[:PK], Assignments[PK+1:]...)
+	}
+	var response Response
+	response.Assigns = Assignments
+	if (len(Assignments) == 0) {
+		response.Empty = true
+	} else {
+		response.Empty = false
+	}
+
+	templates.ExecuteTemplate(w, "assign", response)
 }
 
 func NewAssignment(w http.ResponseWriter, r *http.Request) {
@@ -187,7 +248,7 @@ func NewAssignment(w http.ResponseWriter, r *http.Request) {
 func Home(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
 
-	templates.ExecuteTemplate(w, "home", struct{ Name string}{"Alicia"})
+	templates.ExecuteTemplate(w, "home", struct{ Name string; NumAssigns int}{"Alicia", len(Assignments)})
 	
 	//TODO This should like like cross betweeen Create / Get   
 

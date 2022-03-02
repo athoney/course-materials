@@ -5,7 +5,13 @@
 
     <h1>Welcome {{.Name}}.</h1>
     <p class="lead">My name is Ada, your personal assignment manager. I will help you add, delete, and view your current assignments. Let's get started.</p>
-    <a class="btn btn-light" href="/assignments" role="button">View Assignments</a>
+    <a type="button" class="btn btn-light position-relative" href="/assignments">
+        View Assignments
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+            {{ .NumAssigns }}
+          <span class="visually-hidden">number of assignments</span>
+        </span>
+    </a>
 
     
 </main>

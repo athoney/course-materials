@@ -2,6 +2,11 @@
 {{ template "header" .}}
 
 <main class="mx-auto" style="width: 75%; margin-top: 30px;">
+{{ if .Empty }}
+    <div class="alert alert-light" role="alert">
+        No assignments at this time.
+    </div>
+{{ else }}
     <table class="table bg-light">
         <thead>
           <tr>
@@ -45,6 +50,7 @@
         {{end}}
         </tbody>
     </table>
+{{ end }}
 </main>
 
 {{ template "footer" .}}
