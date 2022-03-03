@@ -15,8 +15,8 @@ type Response struct{
 	Empty bool `json:"empty"`
 }
 
-type ResponseAssign struct{
-	Assign Assignment `json:"assignment"`
+type APIResponse struct{
+	Assigns []Assignment `json:"assignments"`
 }
 
 type Assignment struct {
@@ -58,12 +58,7 @@ func InitAssignments(){
 	Assignments = append(Assignments, assignmnet)
 }
 
-func APISTATUS(w http.ResponseWriter, r *http.Request) {
-	log.Printf("Entering %s end point", r.URL.Path)
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "API is up and running")
-}
-
+//Web-based routes
 
 func GetAssignments(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
@@ -238,18 +233,136 @@ func DeleteAssignment(w http.ResponseWriter, r *http.Request) {
 
 func NewAssignment(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
-
 	templates.ExecuteTemplate(w, "newAssign", nil)
-	
-	//TODO This should like like cross betweeen Create / Get   
-
 }
 
 func Home(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
+	templates.ExecuteTemplate(w, "home", struct{ Name string; NumAssigns int}{"Alicia", len(Assignments)}) 
+}
 
-	templates.ExecuteTemplate(w, "home", struct{ Name string; NumAssigns int}{"Alicia", len(Assignments)})
+
+//API routes
+func APISTATUS(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Entering %s end point", r.URL.Path)
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "API is up and running")
+}
+
+func APIGetAssignment(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Entering %s end point", r.URL.Path)
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := r.ParseForm(); err != nil {
+		log.Print(w, "ParseForm() err: %v", err)
+		return
+	}
+
+	PK, _ := strconv.Atoi(r.FormValue("PK"))
+
+	for _, assignment := range Assignments {
+		if assignment.PK == PK{
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(assignment)
+			break
+		}
+	}
+	w.WriteHeader(http.StatusBadRequest)
+}
+
+func APIGetAssignmentId(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Entering %s end point", r.URL.Path)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	params := mux.Vars(r)
+
+	var AssignmentsById []Assignment
+	var response APIResponse
+
+	for _, assignment := range Assignments {
+		if assignment.Id == params["id"]{
+			AssignmentsById = append(AssignmentsById, assignment)
+		}
+	}
+	response.Assigns = AssignmentsById
+	jsonResponse, err := json.Marshal(response)
+
+	if err != nil {
+		return
+	}
+
+	//TODO 
+	w.Write(jsonResponse)
+}
+
+func APIGetAssignments(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Entering %s end point", r.URL.Path)
+	var response APIResponse
+
+	response.Assigns = Assignments
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	
-	//TODO This should like like cross betweeen Create / Get   
+	jsonResponse, err := json.Marshal(response)
+
+	if err != nil {
+		return
+	}
+
+	//TODO 
+	w.Write(jsonResponse)
+}
+
+func APIAddAssignment(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var assignmnet Assignment
+	r.ParseForm()
+	// Possible TODO: Better Error Checking!
+	// Possible TODO: Better Logging
+	if(r.FormValue("id") != ""){
+		assignmnet.PK = Assignments[len(Assignments)-1].PK + 1
+		assignmnet.Id =  r.FormValue("id")
+		assignmnet.Title =  r.FormValue("title")
+		assignmnet.Class =  r.FormValue("class")
+		assignmnet.Description =  r.FormValue("desc")
+		assignmnet.Points, _ =  strconv.Atoi(r.FormValue("points"))
+		assignmnet.DueDate =  r.FormValue("duedate")
+		assignmnet.TimeEstimate =  r.FormValue("timeestimate")
+		Assignments = append(Assignments, assignmnet)
+		w.WriteHeader(http.StatusCreated)
+		return
+	}
+	w.WriteHeader(http.StatusNotFound)
 
 }
+
+func APIDeleteAssignment(w http.ResponseWriter, r *http.Request) {
+	log.Printf("Entering %s DELETE end point", r.URL.Path)
+	w.Header().Set("Content-Type", "application/txt")
+	w.WriteHeader(http.StatusOK)
+	
+	response := make(map[string]string)
+
+	if err := r.ParseForm(); err != nil {
+		log.Print(w, "ParseForm() err: %v", err)
+		return
+	}
+
+	PK, _ := strconv.Atoi(r.FormValue("PK"))
+
+	for i, assignment := range Assignments {
+		if assignment.PK == PK{
+			Assignments = append(Assignments[:i], Assignments[i+1:]...)
+			response["status"] = "Success"
+			break
+		}
+	}
+	
+	jsonResponse, err := json.Marshal(response)
+	if err != nil {
+		return
+	}
+	w.Write(jsonResponse)
+}
+
