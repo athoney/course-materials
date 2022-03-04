@@ -316,20 +316,48 @@ func APIGetAssignments(w http.ResponseWriter, r *http.Request) {
 
 func APIAddAssignment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	var assignmnet Assignment
+	var assignment Assignment
 	r.ParseForm()
 	// Possible TODO: Better Error Checking!
 	// Possible TODO: Better Logging
 	if(r.FormValue("id") != ""){
-		assignmnet.PK = Assignments[len(Assignments)-1].PK + 1
-		assignmnet.Id =  r.FormValue("id")
-		assignmnet.Title =  r.FormValue("title")
-		assignmnet.Class =  r.FormValue("class")
-		assignmnet.Description =  r.FormValue("desc")
-		assignmnet.Points, _ =  strconv.Atoi(r.FormValue("points"))
-		assignmnet.DueDate =  r.FormValue("duedate")
-		assignmnet.TimeEstimate =  r.FormValue("timeestimate")
-		Assignments = append(Assignments, assignmnet)
+		assignment.PK = Assignments[len(Assignments)-1].PK + 1
+		assignment.Id =  r.FormValue("id")
+		assignment.Title =  r.FormValue("title")
+		assignment.Class =  r.FormValue("class")
+		assignment.Description =  r.FormValue("desc")
+		assignment.Points, _ =  strconv.Atoi(r.FormValue("points"))
+		assignment.DueDate =  r.FormValue("duedate")
+		assignment.TimeEstimate =  r.FormValue("timeestimate")
+		Assignments = append(Assignments, assignment)
+		w.WriteHeader(http.StatusCreated)
+		return
+	}
+	w.WriteHeader(http.StatusNotFound)
+
+}
+
+func APIUpdateAssignment(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	r.ParseForm()
+	PK, _ := strconv.Atoi(r.FormValue("PK"))
+	var idExists bool
+
+	for _, assignment := range Assignments {
+		if (assignment.PK == PK) {
+			idExists = true
+		}
+	}
+
+	if(idExists){
+		Assignments[PK].Id =  r.FormValue("id")
+		Assignments[PK].Title =  r.FormValue("title")
+		Assignments[PK].Class =  r.FormValue("class")
+		Assignments[PK].Description =  r.FormValue("desc")
+		Assignments[PK].Points, _ =  strconv.Atoi(r.FormValue("points"))
+		Assignments[PK].DueDate =  r.FormValue("duedate")
+		Assignments[PK].TimeEstimate =  r.FormValue("timeestimate")
 		w.WriteHeader(http.StatusCreated)
 		return
 	}

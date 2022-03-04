@@ -32,7 +32,7 @@ func main() {
 	router.HandleFunc("/api-getAssignments/{id}", wyoassign.APIGetAssignmentId).Methods("GET")
 	router.HandleFunc("/api-getAssignments", wyoassign.APIGetAssignments).Methods("GET")
 	router.HandleFunc("/api-addAssignment", wyoassign.APIAddAssignment).Methods("POST")
-	// router.HandleFunc("/api-updateAssignment", wyoassign.APIUpdateAssignment).Methods("POST")
+	router.HandleFunc("/api-updateAssignment", wyoassign.APIUpdateAssignment).Methods("POST")
 	router.HandleFunc("/api-deleteAssignment", wyoassign.APIDeleteAssignment).Methods("DELETE")
 
 
