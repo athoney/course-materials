@@ -105,21 +105,17 @@ func DeleteAssignmentAPI(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	params := mux.Vars(r)
 	
-	key := r.URL.Query().Get("validationkey")
-
 	response := make(map[string]string)
-	response["validationKey"] = Valkey
 
-	if key == Valkey {
-		response["status"] = "No Such ID to Delete"
-		for index, assignment := range Assignments {
-				if assignment.Id == params["id"]{
-					Assignments = append(Assignments[:index], Assignments[index+1:]...)
-					response["status"] = "Success"
-					break
-				}
-		}
-	}	
+	response["status"] = "No Such ID to Delete"
+	for index, assignment := range Assignments {
+			if assignment.Id == params["id"]{
+				Assignments = append(Assignments[:index], Assignments[index+1:]...)
+				response["status"] = "Success"
+				break
+			}
+	}
+		
 	jsonResponse, err := json.Marshal(response)
 	if err != nil {
 		return
