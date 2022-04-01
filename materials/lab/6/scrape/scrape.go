@@ -15,6 +15,7 @@ import (
 //ADVANCED: This is perhaps a terrible structure since multiple a filename is NOT guarenteed to be unique; consider an array of Locations? 
 //CHALLENGE: Replace this Local Structure with a Key-Value DB like REDIS
 type FileInfo struct {
+	Id int `json:"id"`
 	Filename string `json:"filename"`
 	Location string `json:"location"`
 }
