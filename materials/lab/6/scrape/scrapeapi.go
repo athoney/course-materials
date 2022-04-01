@@ -48,9 +48,6 @@ func walkFn(w http.ResponseWriter) filepath.WalkFunc {
 				}
 
                 if w != nil && len(Files)>0 {
-
-                    //TODO_6: The current key value is the LEN of Files (this terrible); 
-                    //TODO_6: Create some variable to track how many files have been added
                     w.Write([]byte(`"`+ strconv.Itoa(tfile.Id) +`":  `))
                     json.NewEncoder(w).Encode(tfile)
                     w.Write([]byte(`,`))
@@ -95,9 +92,6 @@ func walkFn2(w http.ResponseWriter, query string) filepath.WalkFunc {
 			}
 
 			if w != nil && len(Files)>0 {
-
-				//TODO_6: The current key value is the LEN of Files (this terrible); 
-				//TODO_6: Create some variable to track how many files have been added
 				w.Write([]byte(`"`+ strconv.Itoa(tfile.Id) +`":  `))
 				json.NewEncoder(w).Encode(tfile)
 				w.Write([]byte(`,`))
@@ -224,6 +218,7 @@ func ResetArrs(w http.ResponseWriter, r *http.Request) {
 	}
     w.Header().Set("Content-Type", "application/json")
 	resetRegEx()
+	index = 0
 	Files = nil
 }
 
