@@ -1,7 +1,5 @@
 package scrape
 
-// scrape.go HAS ONE TODO - TODO_15 and one OPTIONAL "ADVANCED" ASK and one OPTIONAL CHALLENGE
-// the advanced ask has some (minimal) implications to scrapeapi.go while the advanced ask has substantial implications
 
 
 import (
@@ -43,7 +41,6 @@ func resetRegEx(){
 }
 
 func clearRegEx(){
-     //TODO_15 - Validate that this works as expected and doesn't cause issues
     regexes = nil
 }
 
