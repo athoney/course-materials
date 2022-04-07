@@ -7,10 +7,10 @@ import (
 )
 
 func TestGuessSingle(t *testing.T) {
-	got := GuessSingle("77f62e3524cd583d698d51fa24fdff4f") // Currently function returns only number of open ports
+	got := GuessSingle("2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae", "/home/cabox/workspace/course-materials/materials/lab/7/main/wordlist.txt")
 	want := "foo"
 	if got != want {
-		t.Errorf("got %d, wanted %d", got, want)
+		t.Errorf("got %s, wanted %s", got, want)
 	}
 
 }
