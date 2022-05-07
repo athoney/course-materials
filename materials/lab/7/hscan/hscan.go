@@ -53,8 +53,26 @@ func GuessSingle(sourceHash string, filename string) string {
 	return returnVal
 }
 
-func GenHashMaps(filename string) {
+func GenHashMaps(filename string) (int, int) {
+	fmt.Print("Call")
+	f, err := os.Open(filename)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer f.Close()
 
+	scanner := bufio.NewScanner(f)
+
+	for scanner.Scan() {
+		password := scanner.Text()
+
+		go GetSHA(password)
+
+		go GetMD5(password)
+	}
+
+	fmt.Print("Done")
+	return len(md5lookup), len(shalookup)
 	//TODO
 	//itterate through a file (look in the guessSingle function above)
 	//rather than check for equality add each hash:passwd entry to a map SHA and MD5 where the key = hash and the value = password
@@ -66,6 +84,7 @@ func GenHashMaps(filename string) {
 	//Test and record the time it takes to scan to generate these Maps
 	// 1. With and without using go subroutines
 	// 2. Compute the time per password (hint the number of passwords for each file is listed on the site...)
+
 }
 
 func GetSHA(hash string) (string, error) {

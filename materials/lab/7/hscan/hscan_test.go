@@ -14,3 +14,7 @@ func TestGuessSingle(t *testing.T) {
 	}
 
 }
+
+func TestGenHashMaps(t *testing.T) {
+	_, _ := GenHashMaps("/home/cabox/workspace/course-materials/materials/lab/7/main/wordlist.txt")
+}
